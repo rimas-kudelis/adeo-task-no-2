@@ -67,6 +67,48 @@ class ClientSpec extends ObjectBehavior
         ]));
     }
 
+    function it_returns_single_place_info(
+        $client,
+        $requestFactory,
+        RequestInterface $request,
+        ResponseInterface $response,
+        StreamInterface $body
+    ) {
+        $requestFactory->createRequest('GET', 'https://api.meteo.lt/v1/places/vilnius')->shouldBeCalled()
+            ->willReturn($request);
+
+        $client->sendRequest($request)->shouldBeCalled()
+            ->willReturn($response);
+
+        $response->getBody()->shouldBeCalled()
+            ->willReturn($body);
+
+        $body->getContents()->shouldBeCalled()
+            ->willReturn('{
+                "code": "vilnius",
+                "name": "Vilnius",
+                "administrativeDivision": "Vilniaus miesto savivaldyb\u0117",
+                "country": "Lietuva",
+                "countryCode": "LT",
+                "coordinates": {
+                    "latitude": 54.687046,
+                    "longitude": 25.282911
+                }
+            }');
+
+        $place = $this->getPlace('vilnius');
+        $place->shouldHaveType(Place::class);
+        $place->shouldBeLike(new Place(
+            'vilnius',
+            'Vilnius',
+            'Vilniaus miesto savivaldybė',
+            'LT',
+            'Lietuva',
+            54.687046,
+            25.282911
+        ));
+    }
+
     function it_should_return_forecast_types(
         $client,
         $requestFactory,

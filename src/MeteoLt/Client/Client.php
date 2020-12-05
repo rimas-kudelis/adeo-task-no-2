@@ -20,6 +20,7 @@ class Client implements ClientInterface
 {
     protected const API_BASE_URL = 'https://api.meteo.lt/v1';
     protected const ENDPOINT_PLACES = '/places';
+    protected const ENDPOINT_PLACE = '/places/{place-code}';
     protected const ENDPOINT_TEMPLATE_FORECAST_TYPES = '/places/{place-code}/forecasts';
     protected const ENDPOINT_TEMPLATE_FORECASTS = '/places/{place-code}/forecasts/{forecast-type}';
 
@@ -43,6 +44,23 @@ class Client implements ClientInterface
             }
 
             return $places;
+        });
+    }
+
+    public function getPlace(string $code): Place
+    {
+        return $this->try(function() use ($code) {
+            $data = $this->performRequest(static::ENDPOINT_PLACE, ['place-code' => $code]);
+
+            return new Place(
+                $data['code'],
+                $data['name'],
+                $data['administrativeDivision'],
+                $data['countryCode'],
+                $data['country'],
+                $data['coordinates']['latitude'],
+                $data['coordinates']['longitude']
+            );
         });
     }
 

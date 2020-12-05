@@ -12,6 +12,7 @@ use App\MeteoLt\Model\Place;
 interface ClientInterface
 {
     public function getPlaces(): PlaceCollection;
+    public function getPlace(string $code): Place;
     public function getForecastTypes(Place $place): ForecastTypeCollection;
     public function getForecasts(Place $place, ForecastType $type): ForecastCollection;
 }
