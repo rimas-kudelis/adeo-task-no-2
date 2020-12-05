@@ -74,8 +74,7 @@ class ClientSpec extends ObjectBehavior
         RequestInterface $request,
         ResponseInterface $response,
         StreamInterface $body
-    )
-    {
+    ) {
         $place->getCode()->shouldBeCalled()
             ->willReturn('abromiskes');
 
