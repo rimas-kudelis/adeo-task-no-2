@@ -40,7 +40,12 @@ class Client implements ClientInterface
 
             $places = new PlaceCollection();
             foreach ($data as $entry) {
-                $places[] = new Place($entry['code'], $entry['name'], $entry['administrativeDivision'], $entry['countryCode']);
+                $places[] = new Place(
+                    $entry['code'],
+                    $entry['name'],
+                    $entry['administrativeDivision'],
+                    $entry['countryCode']
+                );
             }
 
             return $places;
