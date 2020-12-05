@@ -81,14 +81,14 @@ class AppFixtures extends Fixture
             $conditions[$weatherConditionCode] = $weatherCondition;
         }
 
-        for ($i = 0; $i < 1000; $i++) {
+        for ($i = 1; $i <= 1000; $i++) {
             $suffix = array_rand($suffixToWeatherConditionMap);
             $weatherConditionCodes = $suffixToWeatherConditionMap[$suffix];
             $prefix = $this->getRandomValue($productAdjectives);
             $productType = $this->getRandomValue($productTypes);
 
             $product = (new Product())
-                ->setSku('PROD' . str_pad((string) $i, '4', '0'))
+                ->setSku('PROD' . str_pad((string) $i, '4', '0', STR_PAD_LEFT))
                 ->setName(sprintf(
                     '%s %s for %s',
                     $prefix,
