@@ -1,0 +1,49 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0
+    restart: on-failure
+    ports:
+      - '${MYSQL_PORT:-3306}:3306'
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+#      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_DATABASE: 'app'
+      MYSQL_USER: 'app'
+      MYSQL_PASSWORD: 'password'
+#      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - ./.docker/db:/tmp/dbdumps:rw
+      - db_data:/var/lib/mysql:rw
+
+  php:
+    build: .docker/php
+    restart: on-failure
+    user: '${UID:-1000}'
+#    env_file:
+#      - .env
+    volumes:
+      - .:/srv/app:rw,cached
+      - ./var:/srv/app/var:rw,cached
+      - ./public/bundles:/srv/app/public/bundles:rw
+      - ./vendor:/srv/app/vendor:rw,cached
+      - ./config:/srv/app/config:rw,cached
+      - ./composer.json:/srv/app/composer.json:rw,cached
+      - ./composer.lock:/srv/app/composer.lock:rw,cached
+      - ./symfony.lock:/srv/app/symfony.lock:rw,cached
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:latest
+    restart: on-failure
+    ports:
+      - '${WEB_PORT:-80}:80'
+    volumes:
+      - ./public:/srv/app/public:ro
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+
+volumes:
+  db_data:
