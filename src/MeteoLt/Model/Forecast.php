@@ -28,11 +28,11 @@ class Forecast
     private float $airTemperature;
     private float $windSpeed;
     private float $windGust;
-    private int $windDirection;
-    private int $cloudCover;
-    private int $seaLevelPressure;
-    private int $relativeHumidity;
-    private int $totalPrecipitation;
+    private float $windDirection;
+    private float $cloudCover;
+    private float $seaLevelPressure;
+    private float $relativeHumidity;
+    private float $totalPrecipitation;
     private string $conditionCode;
 
     public function __construct(
@@ -43,11 +43,11 @@ class Forecast
         float $airTemperature,
         float $windSpeed,
         float $windGust,
-        int $windDirection,
-        int $cloudCover,
-        int $seaLevelPressure,
-        int $relativeHumidity,
-        int $totalPrecipitation,
+        float $windDirection,
+        float $cloudCover,
+        float $seaLevelPressure,
+        float $relativeHumidity,
+        float $totalPrecipitation,
         string $conditionCode
     ) {
         $this->place = $place;
@@ -100,27 +100,27 @@ class Forecast
         return $this->windGust;
     }
 
-    public function getWindDirection(): int
+    public function getWindDirection(): float
     {
         return $this->windDirection;
     }
 
-    public function getCloudCover(): int
+    public function getCloudCover(): float
     {
         return $this->cloudCover;
     }
 
-    public function getSeaLevelPressure(): int
+    public function getSeaLevelPressure(): float
     {
         return $this->seaLevelPressure;
     }
 
-    public function getRelativeHumidity(): int
+    public function getRelativeHumidity(): float
     {
         return $this->relativeHumidity;
     }
 
-    public function getTotalPrecipitation(): int
+    public function getTotalPrecipitation(): float
     {
         return $this->totalPrecipitation;
     }
