@@ -3,6 +3,7 @@
 namespace spec\App\MeteoLt\Client;
 
 use App\MeteoLt\Client\Client;
+use App\MeteoLt\Client\ClientInterface;
 use App\MeteoLt\Collection\ForecastCollection;
 use App\MeteoLt\Collection\ForecastTypeCollection;
 use App\MeteoLt\Collection\PlaceCollection;
@@ -12,7 +13,7 @@ use App\MeteoLt\Model\Place;
 use ArrayIterator;
 use DateTimeImmutable;
 use PhpSpec\ObjectBehavior;
-use Psr\Http\Client\ClientInterface;
+use Psr\Http\Client\ClientInterface as PsrHttpClient;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -20,7 +21,7 @@ use Psr\Http\Message\StreamInterface;
 
 class ClientSpec extends ObjectBehavior
 {
-    function let(ClientInterface $client, RequestFactoryInterface $requestFactory): void
+    function let(PsrHttpClient $client, RequestFactoryInterface $requestFactory): void
     {
         $this->beConstructedWith($client, $requestFactory);
     }
@@ -28,6 +29,7 @@ class ClientSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $this->shouldHaveType(Client::class);
+        $this->shouldImplement(ClientInterface::class);
     }
 
     function it_returns_places($client, $requestFactory, RequestInterface $request, ResponseInterface $response, StreamInterface $body)

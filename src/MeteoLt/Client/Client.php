@@ -12,21 +12,21 @@ use App\MeteoLt\Model\ForecastType;
 use App\MeteoLt\Model\Place;
 use Closure;
 use DateTimeImmutable;
-use Psr\Http\Client\ClientInterface;
+use Psr\Http\Client\ClientInterface as HttpClient;
 use Psr\Http\Message\RequestFactoryInterface;
 use Throwable;
 
-class Client
+class Client implements ClientInterface
 {
     protected const API_BASE_URL = 'https://api.meteo.lt/v1';
     protected const ENDPOINT_PLACES = '/places';
     protected const ENDPOINT_TEMPLATE_FORECAST_TYPES = '/places/{place-code}/forecasts';
     protected const ENDPOINT_TEMPLATE_FORECASTS = '/places/{place-code}/forecasts/{forecast-type}';
 
-    private ClientInterface $client;
+    private HttpClient $client;
     private RequestFactoryInterface $requestFactory;
 
-    public function __construct(ClientInterface $client, RequestFactoryInterface $requestFactory)
+    public function __construct(HttpClient $client, RequestFactoryInterface $requestFactory)
     {
         $this->client = $client;
         $this->requestFactory = $requestFactory;
