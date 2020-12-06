@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Exception\CouldNotGetForecastForLocationException;
+use App\Exception\CouldNotGetLocationInfoException;
 use App\Exception\NoForecastsFoundForDateException;
 use App\MeteoLt\Client\ClientInterface;
 use App\MeteoLt\Collection\ForecastCollection;
+use App\MeteoLt\Exception\MeteoLtException;
 use App\MeteoLt\Model\Forecast;
 use App\MeteoLt\Model\ForecastType;
 use App\MeteoLt\Model\Place;
@@ -36,12 +39,21 @@ class WeatherForecastDependentProductRecommender implements DailyLocationDepende
 
     public function recommend(string $placeCode, int $days = 3, int $productsPerDay = 3): LocationAwareRecommendations
     {
-        $place = $this->client->getPlace($placeCode);
-        $forecastType = $this->getForecastType($place);
-        $forecasts = $this->client->getForecasts($place, $forecastType);
+        try {
+            $place = $this->client->getPlace($placeCode);
+        } catch (MeteoLtException $e) {
+            throw new CouldNotGetLocationInfoException('Location could not be fetched. Bad code?', 0, $e);
+        }
 
-        $recommendations = $this->getRecommendations($forecasts, $days, $productsPerDay);
-        return new LocationAwareRecommendations($place->getName(), $recommendations, 'Weather forecast from meteo.lt was used by this service.');
+        try {
+            $forecastType = $this->getForecastType($place);
+            $forecasts = $this->client->getForecasts($place, $forecastType);
+
+            $recommendations = $this->getRecommendations($forecasts, $days, $productsPerDay);
+            return new LocationAwareRecommendations($place->getName(), $recommendations, 'Weather forecast from meteo.lt was used by this service.');
+        } catch (MeteoLtException $e) {
+            throw new CouldNotGetForecastForLocationException('Weather forecast could not be fetched. Something is probably wrong with the upstream service.', 0, $e);
+        }
     }
 
     protected function getRecommendations(ForecastCollection $forecasts, int $days, int $productsPerDay): RecommendationCollection
