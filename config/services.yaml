@@ -29,3 +29,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\CachingMeteoLtClient:
+        arguments:
+            $client: '@App\MeteoLt\Client\Client'
+
+    App\MeteoLt\Client\ClientInterface: '@App\Service\CachingMeteoLtClient'
